@@ -18,15 +18,9 @@ type AreaData struct {
 }
 
 func commandMap(c *config) error {
-	body, err := api.GetRequest(c.next)
-	if err != nil {
-		fmt.Printf("Something failed during map get request: %v", err)
-		return err
-	}
-
+	body, _ := api.CacheOrGet(c.next, &c.cache)
 	areas := AreaData{}
-
-	err = json.Unmarshal(body, &areas)
+	err := json.Unmarshal(body, &areas)
 	if err != nil {
 		fmt.Printf("Something failed during map unmarshal: %v", err)
 		return err
@@ -38,18 +32,13 @@ func commandMap(c *config) error {
 }
 
 func commandMapb(c *config) error {
-
 	if c.previous == "" {
 		fmt.Println("Previous is empty")
 		return nil
 	}
-	body, err := api.GetRequest(c.previous)
-	if err != nil {
-		fmt.Printf("Something failed during mapb get request: %v", err)
-		return err
-	}
+	body, _ := api.CacheOrGet(c.previous, &c.cache)
 	areas := AreaData{}
-	err = json.Unmarshal(body, &areas)
+	err := json.Unmarshal(body, &areas)
 	if err != nil {
 		fmt.Printf("Something failed during mapb unmarshal: %v", err)
 		return err

@@ -4,6 +4,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/mamoss-oss/pokedexcli/internal/pokecache"
 )
 
 func GetRequest(url string) ([]byte, error) {
@@ -22,4 +24,15 @@ func GetRequest(url string) ([]byte, error) {
 		log.Fatal(err)
 	}
 	return body, err
+}
+
+func CacheOrGet(url string, cache *pokecache.Cache) ([]byte, error) {
+	data, res := cache.Get(url)
+	if res {
+		return data, nil
+	} else {
+		data, err := GetRequest(url)
+		cache.Add(url, data)
+		return data, err
+	}
 }

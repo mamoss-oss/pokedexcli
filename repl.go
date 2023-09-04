@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/mamoss-oss/pokedexcli/internal/pokecache"
 )
 
 type cliCommand struct {
@@ -14,6 +17,7 @@ type cliCommand struct {
 }
 
 type config struct {
+	cache    pokecache.Cache
 	next     string
 	previous string
 }
@@ -21,7 +25,8 @@ type config struct {
 func startRepl() {
 
 	userConfig := config{
-		next: "https://pokeapi.co/api/v2/location-area/",
+		cache: pokecache.NewCache(time.Second * 300),
+		next:  "https://pokeapi.co/api/v2/location-area/",
 	}
 
 	for {
