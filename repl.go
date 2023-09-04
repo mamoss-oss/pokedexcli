@@ -13,7 +13,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, ...string) error
 }
 
 type config struct {
@@ -38,13 +38,14 @@ func startRepl() {
 		scanner.Scan()
 		userCommand := scanner.Text()
 		userCommand = CleanText(userCommand)
+		split := strings.Split(userCommand, " ")
 		commands := getCommands()
-		c, ok := commands[userCommand]
+		c, ok := commands[split[0]]
 		if !ok {
 			fmt.Println("Sorry, command not found. Try 'help' for usage guidelines.")
 			continue
 		}
-		err := c.callback(&userConfig)
+		err := c.callback(&userConfig, split...)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
@@ -78,6 +79,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Show the previous location area",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explore the Pokemons in a location",
+			callback:    commandExplore,
 		},
 	}
 }

@@ -17,35 +17,37 @@ type AreaData struct {
 	} `json:"results"`
 }
 
-func commandMap(c *config) error {
-	body, _ := api.CacheOrGet(c.next, &c.cache)
-	areas := AreaData{}
-	err := json.Unmarshal(body, &areas)
+func commandMap(c *config, args ...string) error {
+	body, err := api.CacheOrGet(c.next, &c.cache)
 	if err != nil {
-		fmt.Printf("Something failed during map unmarshal: %v", err)
+		return err
+	}
+	areas := AreaData{}
+	err = json.Unmarshal(body, &areas)
+	if err != nil {
 		return err
 	}
 	updateConf(c, &areas)
 	printAreas(&areas)
-
 	return err
 }
 
-func commandMapb(c *config) error {
+func commandMapb(c *config, args ...string) error {
 	if c.previous == "" {
 		fmt.Println("Previous is empty")
 		return nil
 	}
-	body, _ := api.CacheOrGet(c.previous, &c.cache)
-	areas := AreaData{}
-	err := json.Unmarshal(body, &areas)
+	body, err := api.CacheOrGet(c.previous, &c.cache)
 	if err != nil {
-		fmt.Printf("Something failed during mapb unmarshal: %v", err)
+		return err
+	}
+	areas := AreaData{}
+	err = json.Unmarshal(body, &areas)
+	if err != nil {
 		return err
 	}
 	updateConf(c, &areas)
 	printAreas(&areas)
-
 	return err
 }
 
