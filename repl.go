@@ -20,13 +20,15 @@ type config struct {
 	cache    pokecache.Cache
 	next     string
 	previous string
+	pokedex  map[string]PokemonData
 }
 
 func startRepl() {
 
 	userConfig := config{
-		cache: pokecache.NewCache(time.Second * 300),
-		next:  "https://pokeapi.co/api/v2/location-area/",
+		cache:   pokecache.NewCache(time.Second * 300),
+		next:    "https://pokeapi.co/api/v2/location-area/",
+		pokedex: make(map[string]PokemonData),
 	}
 
 	for {
@@ -84,6 +86,21 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Explore the Pokemons in a location",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Attempt to catch a Pokemon",
+			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Check out a known pokemon in your pokedex",
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "List all Pokemons in your current pokedex",
+			callback:    commandPokedex,
 		},
 	}
 }
